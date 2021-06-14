@@ -42,7 +42,7 @@ To install aiofiles, simply:
 
 .. code-block:: bash
 
-    $ pip install git+https://gitee.com/waketzheng/aiopathlib.git
+    $ pip install aiopathlib
 
 
 Usage
