@@ -3,6 +3,28 @@ name = "aiopathlib"
 version = "0.1.0"
 description = "Pathlib support for asyncio"
 authors = ["Waket Zheng <waketzheng@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/waketzheng/aiopathlib"
+repository = "https://github.com/waketzheng/aiopathlib"
+keywords = ["aiopathlib", "asyncpath", "aiopath"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: POSIX",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Framework :: AsyncIO",
+]
+include = [
+    "LICENSE",
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
