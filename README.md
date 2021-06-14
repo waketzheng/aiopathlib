@@ -6,25 +6,24 @@ disk files in asyncio applications.
 
 Base on `aiofiles` and just like pathlib, but use await.
 
-.. code-block:: python
+```py
+with open('filename', 'w') as f:
+    f.write('My file contents')
 
-    with open('filename', 'w') as f:
-        f.write('My file contents')
+text = await aiopathlib.AsyncPath('filename').read_text()
+print(text)
+'My file contents'
 
-    text = await aiopathlib.AsyncPath('filename').read_text()
-    print(text)
-    'My file contents'
-
-    content = await aiopathlib.AsyncPath(Path('filename')).read_bytes()
-    print(cotent)
-    b'My file contents'
-
+content = await aiopathlib.AsyncPath(Path('filename')).read_bytes()
+print(cotent)
+b'My file contents'
+```
 
 Asynchronous interface to create folder.
 
-.. code-block:: python
-
-    await AsyncPath('dirname').mkdir(parents=True)
+```py
+await AsyncPath('dirname').mkdir(parents=True)
+```
 
 
 Features
@@ -40,9 +39,10 @@ Installation
 
 To install aiofiles, simply:
 
-.. code-block:: bash
 
-    $ pip install aiopathlib
+```bash
+$ pip install aiopathlib
+```
 
 
 Usage
