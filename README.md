@@ -15,14 +15,16 @@ print(text)
 'My file contents'
 
 content = await aiopathlib.AsyncPath(Path('filename')).read_bytes()
-print(cotent)
+print(content)
 b'My file contents'
 ```
 
 Asynchronous interface to create folder.
 
 ```py
-await AsyncPath('dirname').mkdir(parents=True)
+apath = AsyncPath('dirname/subpath')
+if not await apath.exists():
+    await apath.mkdir(parents=True)
 ```
 
 
