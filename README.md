@@ -1,5 +1,5 @@
 aiopathlib: Pathlib support for asyncio
-==================================
+=======================================
 
 **aiopathlib** is written in Python, for handling local
 disk files in asyncio applications.
@@ -64,15 +64,15 @@ Usage
 
 
 History
-~~~~~~~
+-------
 
-0.1.0 (2021-06-14)
-``````````````````
+#### 0.1.0 (2021-06-14)
 
 - Introduced a changelog.
 - Publish at gitee.
 
 
 Contributing
-~~~~~~~~~~~~
+------------
+
 Contributions are very welcome.
