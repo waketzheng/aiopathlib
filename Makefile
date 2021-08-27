@@ -23,7 +23,7 @@ lint: ## Reformat with isort and black, then check style with flake8 and mypy
 
 check: build  ## Checks that build is sane
 ifneq ($(shell which black),)
-		black --check $(black_opts) $(checkfiles) || (echo "Please run 'make style' to auto-fix style issues" && false)
+	black --check $(black_opts) $(checkfiles) || (echo "Please run 'make style' to auto-fix style issues" && false)
 endif
 	flake8 $(checkfiles)
 	mypy $(checkfiles)
@@ -36,4 +36,7 @@ style: ## Auto-formats the code
 	black $(black_opts) $(checkfiles)
 
 bump: ## Bump up version
+ifeq ($(shell which bumpversion),)
+	pip install bumpversion
+endif
 	bumpversion patch  # major/minor/patch
