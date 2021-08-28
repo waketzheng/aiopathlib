@@ -40,19 +40,44 @@ class AsyncPath:
     async def write_bytes(self, content: bytes) -> None:
         await self.async_write(content, "wb")
 
-    async def write_text(self, text: str) -> None:
-        await self.async_write(text, "w")
+    async def write_text(
+        self,
+        text: str,
+        encoding: Optional[str] = None,
+        errors: Optional[str] = None,
+    ) -> None:
+        await self.async_write(text, "w", encoding=encoding, errors=errors)
 
-    async def write_json(self, context: Union[list, dict, int, str, float]) -> None:
-        await self.async_write(json.dumps(context), "w")
+    async def write_json(
+        self,
+        context: Union[list, dict, int, str, float, bool, None],
+        encoding: Optional[str] = None,
+        errors: Optional[str] = None,
+        **kw,
+    ) -> None:
+        await self.async_write(
+            json.dumps(context, **kw), "w", encoding=encoding, errors=errors
+        )
 
-    async def async_write(self, ctx: Union[bytes, str], mode: Optional[str] = None):
+    async def async_write(
+        self,
+        ctx: Union[bytes, str],
+        mode: Optional[str] = None,
+        encoding: Optional[str] = None,
+        errors: Optional[str] = None,
+    ):
         if mode is None:
             mode = "wb" if isinstance(ctx, bytes) else "w"
-        async with aiofiles.open(self._fname, mode) as fp:  # type:ignore
+        async with aiofiles.open(
+            self._fname, mode, encoding=encoding, errors=errors
+        ) as fp:  # type:ignore
             await fp.write(ctx)
 
-    async def read_text(self, encoding=None, errors=None) -> str:
+    async def read_text(
+        self,
+        encoding: Optional[str] = None,
+        errors: Optional[str] = None,
+    ) -> str:
         async with aiofiles.open(self._fname, encoding=encoding, errors=errors) as fp:
             return await fp.read()
 
@@ -60,8 +85,10 @@ class AsyncPath:
         async with aiofiles.open(self._fname, mode="rb") as fp:
             return await fp.read()
 
-    async def read_json(self, encoding=None, errors=None) -> Union[dict, list]:
-        return json.loads(await self.read_text(encoding, errors))
+    async def read_json(
+        self, encoding: Optional[str] = None, errors: Optional[str] = None, **kw
+    ) -> Union[dict, list, str, int, float, bool, None]:
+        return json.loads(await self.read_text(encoding, errors), **kw)
 
     async def remove(self) -> None:
         return await aiofiles.os.remove(self._fname)
