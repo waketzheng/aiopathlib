@@ -90,6 +90,6 @@ async def test_write():
     new_name = filename.replace(".txt", ".json")
     await AsyncPath(filename).rename(new_name)
     assert not exists(filename)
-    assert exists(new_name)
+    assert await AsyncPath(Path(new_name)).exists()
     await AsyncPath(new_name).unlink()
     assert not exists(new_name)

@@ -72,11 +72,12 @@ Usage
 History
 -------
 
-#### 0.1.2 (2021-08-28)
+#### 0.1.3 (2021-08-28)
 
 - Add makefile.
 - Test all functions.
 - Fix rename method error.
+- Support sync pathlib methods.
 
 #### 0.1.0 (2021-06-14)
 
