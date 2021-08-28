@@ -1,6 +1,6 @@
 language: python
 cache: pip
-dist: groovy
+dist: bionic
 addons:
   chrome: stable
 sudo: false
