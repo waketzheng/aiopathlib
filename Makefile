@@ -44,3 +44,4 @@ ifeq ($(shell which bumpversion),)
 	pip install bumpversion
 endif
 	bumpversion patch  # major/minor/patch
+	git log
