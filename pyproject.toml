@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiopathlib"
-version = "0.1.1"
+version = "0.1.2"
 description = "Pathlib support for asyncio"
 authors = ["Waket Zheng <waketzheng@gmail.com>"]
 license = "MIT"
