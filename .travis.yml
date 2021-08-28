@@ -1,0 +1,21 @@
+language: python
+cache: pip
+dist: groovy
+addons:
+  chrome: stable
+sudo: false
+python:
+  - "3.8"
+  - "3.9"
+
+install:
+  - travis_retry pip install -U tox-travis
+  - pip install .
+  - pip install aiofiles coverage
+script:
+  - tox
+after_success:
+  - pip install codecov
+  - codecov
+notifications:
+    email: false

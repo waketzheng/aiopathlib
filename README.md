@@ -1,5 +1,11 @@
 aiopathlib: Pathlib support for asyncio
-==================================
+=======================================
+
+[![image](https://img.shields.io/pypi/v/aiopathlib.svg)](https://pypi.org/project/aiopathlib/)
+[![image](https://img.shields.io/pypi/pyversions/aiopathlib.svg)](https://pypi.org/project/aiopathlib/)
+[![image](https://img.shields.io/pypi/l/aiopathlib.svg)](https://pypi.org/project/aiopathlib/)
+[![image](https://img.shields.io/codecov/c/github/waketzheng/aiopathlib/master.svg)](https://codecov.io/github/waketzheng/aiopathlib?branch=master)
+[![image](https://img.shields.io/badge/code%20style-pep8-green.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 **aiopathlib** is written in Python, for handling local
 disk files in asyncio applications.
@@ -64,15 +70,21 @@ Usage
 
 
 History
-~~~~~~~
+-------
 
-0.1.0 (2021-06-14)
-``````````````````
+#### 0.1.2 (2021-08-28)
+
+- Add makefile.
+- Test all functions.
+- Fix rename method error.
+
+#### 0.1.0 (2021-06-14)
 
 - Introduced a changelog.
 - Publish at gitee.
 
 
 Contributing
-~~~~~~~~~~~~
+------------
+
 Contributions are very welcome.
