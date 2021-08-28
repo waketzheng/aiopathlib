@@ -38,6 +38,7 @@ mypy = "^0.910"
 bandit = "^1.7.0"
 flake8 = "^3.9.2"
 types-aiofiles = "^0.1.9"
+pytest-asyncio = "^0.15.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -69,3 +70,7 @@ force_grid_wrap = 0
 force_single_line = false
 balanced_wrapping = true
 use_parentheses = true
+
+[tool.coverage]
+    [tool.coverage.report]
+    include = ['aiopathlib.py']

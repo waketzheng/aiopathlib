@@ -35,6 +35,10 @@ style: ## Auto-formats the code
 	isort -src $(checkfiles)
 	black $(black_opts) $(checkfiles)
 
+test: ## Test code with pytest and show coverage
+	coverage run -m pytest
+	coverage report -m
+
 bump: ## Bump up version
 ifeq ($(shell which bumpversion),)
 	pip install bumpversion

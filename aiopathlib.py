@@ -93,6 +93,12 @@ class AsyncPath:
     async def remove(self) -> None:
         return await aiofiles.os.remove(self._fname)
 
+    async def rmdir(self) -> None:
+        return await aiofiles.os.rmdir(self._fname)
+
+    async def unlink(self) -> None:
+        return await aiofiles.os.remove(self._fname)
+
     async def rename(self, target: str) -> AsyncPath:
         await aiofiles.os.rename(self._fname, target)
-        return self.__class__(Path(self._fname).with_name(target))
+        return self.__class__(target)
