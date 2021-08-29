@@ -8,13 +8,13 @@ def test_parent_joinpath():
     """Test the parent and joinpath call."""
     filepath = Path(__file__).parent.joinpath("resources", "test_file2.txt")
     async_path = AsyncPath(__file__).parent.joinpath("resources", "test_file2.txt")
-    assert filepath == async_path._path
+    assert str(filepath) == str(async_path)
 
 
 def test_cwd_home():
     """Test the cmd and home call."""
-    assert AsyncPath.home()._path == Path.home()
-    assert AsyncPath.cwd()._path == Path.cwd()
+    assert str(AsyncPath.home()) == str(Path.home())
+    assert str(AsyncPath.cwd()) == str(Path.cwd())
 
 
 def test_div():

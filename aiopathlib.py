@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from os import PathLike
-from pathlib import Path
+from pathlib import Path, PosixPath, PurePath, WindowsPath
 from typing import Optional, Union
 
 import aiofiles
@@ -12,37 +11,45 @@ import aiofiles.os
 JSONType = Union[list, dict, int, str, float, bool, None]
 
 
-class AsyncPath:
-    def __init__(self, *args, **kwargs):
-        self._path = Path(*args, **kwargs)
+class AsyncPath(Path):
+    def __new__(cls, *args, **kwargs):
+        if cls is AsyncPath:
+            cls = AsyncWindowsPath if os.name == "nt" else AsyncPosixPath
+        self = cls._from_parts(args, init=False)
+        if not self._flavour.is_supported:
+            raise NotImplementedError(
+                "cannot instantiate %r on your system" % (cls.__name__,)
+            )
+        self._init()
+        return self
 
-    async def mkdir(
+    async def mkdir(  # type: ignore[override]
         self, mode: int = 511, parents: bool = False, exist_ok: bool = False
     ) -> None:
         try:
-            await aiofiles.os.mkdir(self._path, mode)
+            await aiofiles.os.mkdir(self, mode)
         except FileExistsError:
-            if exist_ok and not self._path.is_file():
+            if exist_ok and not self.is_file():
                 return
             raise
         except FileNotFoundError:
             if not parents:
                 raise
-            for p in list(self._path.parents)[::-1]:
-                if not p.exists():
+            for p in list(self.parents)[::-1]:
+                if not await p.exists():
                     await aiofiles.os.mkdir(p, mode)
-            await aiofiles.os.mkdir(self._path, mode)
+            await aiofiles.os.mkdir(self, mode)
 
-    async def exists(self) -> bool:
+    async def exists(self) -> bool:  # type: ignore[override]
         try:
-            return bool(await aiofiles.os.stat(self._path))
+            return bool(await aiofiles.os.stat(self))
         except FileNotFoundError:
             return False
 
-    async def write_bytes(self, content: bytes) -> None:
+    async def write_bytes(self, content: bytes) -> None:  # type: ignore[override]
         await self.async_write(content, "wb")
 
-    async def write_text(
+    async def write_text(  # type: ignore[override]
         self,
         text: str,
         encoding: Optional[str] = None,
@@ -71,20 +78,20 @@ class AsyncPath:
         if mode is None:
             mode = "wb" if isinstance(ctx, bytes) else "w"
         async with aiofiles.open(
-            self._path, mode, encoding=encoding, errors=errors
+            self, mode, encoding=encoding, errors=errors
         ) as fp:  # type:ignore
             await fp.write(ctx)
 
-    async def read_text(
+    async def read_text(  # type: ignore[override]
         self,
         encoding: Optional[str] = None,
         errors: Optional[str] = None,
     ) -> str:
-        async with aiofiles.open(self._path, encoding=encoding, errors=errors) as fp:
+        async with aiofiles.open(self, encoding=encoding, errors=errors) as fp:
             return await fp.read()
 
-    async def read_bytes(self) -> bytes:
-        async with aiofiles.open(self._path, mode="rb") as fp:
+    async def read_bytes(self) -> bytes:  # type: ignore[override]
+        async with aiofiles.open(self, mode="rb") as fp:
             return await fp.read()
 
     async def read_json(
@@ -92,46 +99,37 @@ class AsyncPath:
     ) -> JSONType:
         return json.loads(await self.read_text(encoding, errors), **kw)
 
-    async def remove(self) -> None:
-        return await aiofiles.os.remove(self._path)
+    async def remove(self, missing_ok: bool = False) -> None:
+        try:
+            return await aiofiles.os.remove(self)
+        except FileNotFoundError:
+            if not missing_ok:
+                raise
 
-    async def rmdir(self) -> None:
-        return await aiofiles.os.rmdir(self._path)
+    async def rmdir(self) -> None:  # type: ignore[override]
+        return await aiofiles.os.rmdir(self)
 
-    async def unlink(self) -> None:
+    async def unlink(self, missing_ok: bool = False) -> None:  # type: ignore[override]
         return await self.remove()
 
-    async def rename(self, target: str) -> AsyncPath:
-        await aiofiles.os.rename(self._path, target)
+    async def rename(  # type: ignore[override]
+        self, target: Union[str, PurePath]
+    ) -> AsyncPath:
+        await aiofiles.os.rename(self, target)
         return self.__class__(target)
 
-    # Sync functions
-    def joinpath(self, *args: Union[str, PathLike]) -> AsyncPath:
-        return self.__class__(self._path.joinpath(*args))
 
-    @classmethod
-    def cwd(cls) -> AsyncPath:
-        """Return a new path pointing to the current working directory
-        (as returned by os.getcwd()).
-        """
-        return cls(os.getcwd())
+class AsyncPosixPath(AsyncPath, PosixPath):
+    """AsyncPath subclass for non-Windows systems.
 
-    @classmethod
-    def home(cls) -> AsyncPath:
-        """Return a new path pointing to the user's home directory (as
-        returned by os.path.expanduser('~')).
-        """
-        return cls(Path()._flavour.gethomedir(None))  # type:ignore
+    On a POSIX system, instantiating a AsyncPath should return this object.
+    """
 
-    @property
-    def parent(self) -> AsyncPath:
-        return self.__class__(self._path.parent)
+    __slots__ = ()
 
-    def __truediv__(self, key):
-        return self.__class__(self._path.__truediv__(key))
 
-    def __rtruediv__(self, key):
-        return self.__class__(self._path.__rtruediv__(key))
+class AsyncWindowsPath(AsyncPath, WindowsPath):
+    """AsyncPath subclass for Windows systems.
 
-    def __eq__(self, other):
-        return self._path == other._path
+    On a Windows system, instantiating a AsyncPath should return this object.
+    """
