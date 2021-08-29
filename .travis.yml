@@ -5,10 +5,9 @@ python:
 before_install:
   - python -m pip install --upgrade pip
 install:
-  - pip install aiofiles pytest
   - pip install .
-script:
-  - pytest
+  - pip install pytest
+script: pytest
 after_success:
   - pip install codecov
   - codecov
