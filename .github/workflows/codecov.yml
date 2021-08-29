@@ -34,7 +34,9 @@ jobs:
       run: |
         coverage run -m pytest
     - name: Upload result to codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
+      with:
+        verbose:true
     - name: Run tox
       run: |
         pip install tox
