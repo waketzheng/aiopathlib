@@ -1,8 +1,6 @@
 language: python
 cache: pip
 dist: bionic
-addons:
-  chrome: stable
 sudo: false
 python:
   - "3.8"
@@ -11,7 +9,7 @@ python:
 install:
   - travis_retry pip install -U tox-travis
   - pip install .
-  - pip install aiofiles coverage
+  - pip install aiofiles coverage pytest
 script:
   - tox
 after_success:
