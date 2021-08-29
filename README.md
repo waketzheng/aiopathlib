@@ -72,6 +72,11 @@ Usage
 History
 -------
 
+#### 0.2.0 (2021-08-29)
+
+- Make `AsyncPath` be subclass of `pathlib.Path`.
+- Add github action to show test coverage.
+
 #### 0.1.3 (2021-08-28)
 
 - Add makefile.
