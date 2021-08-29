@@ -7,6 +7,7 @@ help:
 
 up: ## Update dependencies
 	poetry update
+	poetry export --dev --without-hashes >> dev_requirements.txt
 
 build:  ## Build wheel and zip
 	rm -fR dist/
