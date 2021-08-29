@@ -1,13 +1,11 @@
 language: python
-cache: pip
-python:
-  - "3.8"
-before_install:
-  - python -m pip install --upgrade pip
-install:
-  - pip install .
-  - pip install pytest
-script: pytest
-after_success:
-  - pip install codecov
-  - codecov
+cache:
+  directories:
+    - $HOME/.cache/pip
+env: TOXENV=Python3.8
+matrix:
+  include:
+    - python: 3.8
+      dist: bionic
+install: pip install -r dev_requirements.txt
+script: make lint
