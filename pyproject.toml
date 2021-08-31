@@ -58,6 +58,8 @@ exclude = '''
       \.eggs         # exclude a few common directories in the
     | \.git          # root of the project
     | \.mypy_cache
+    | \.pytest_cache
+    | \.tox
     | \.venv
 '''
 
@@ -93,3 +95,6 @@ commands =
     coverage run --source aiopathlib -m pytest tests
 passenv = CI
 """
+
+[tool.mypy]
+disable_error_code = "override"

@@ -23,7 +23,7 @@ class AsyncPath(Path):
         self._init()
         return self
 
-    async def mkdir(  # type: ignore[override]
+    async def mkdir(
         self, mode: int = 511, parents: bool = False, exist_ok: bool = False
     ) -> None:
         try:
@@ -40,13 +40,13 @@ class AsyncPath(Path):
                     await aiofiles.os.mkdir(p, mode)
             await aiofiles.os.mkdir(self, mode)
 
-    async def exists(self) -> bool:  # type: ignore[override]
+    async def exists(self) -> bool:
         try:
             return bool(await aiofiles.os.stat(self))
         except FileNotFoundError:
             return False
 
-    async def write_bytes(self, content: bytes) -> None:  # type: ignore[override]
+    async def write_bytes(self, content: bytes) -> None:
         await self.async_write(content, "wb")
 
     async def write_text(  # type: ignore[override]
@@ -82,7 +82,7 @@ class AsyncPath(Path):
         ) as fp:  # type:ignore
             await fp.write(ctx)
 
-    async def read_text(  # type: ignore[override]
+    async def read_text(
         self,
         encoding: Optional[str] = None,
         errors: Optional[str] = None,
@@ -90,7 +90,7 @@ class AsyncPath(Path):
         async with aiofiles.open(self, encoding=encoding, errors=errors) as fp:
             return await fp.read()
 
-    async def read_bytes(self) -> bytes:  # type: ignore[override]
+    async def read_bytes(self) -> bytes:
         async with aiofiles.open(self, mode="rb") as fp:
             return await fp.read()
 
@@ -106,15 +106,13 @@ class AsyncPath(Path):
             if not missing_ok:
                 raise
 
-    async def rmdir(self) -> None:  # type: ignore[override]
+    async def rmdir(self) -> None:
         return await aiofiles.os.rmdir(self)
 
     async def unlink(self, missing_ok: bool = False) -> None:  # type: ignore[override]
         return await self.remove()
 
-    async def rename(  # type: ignore[override]
-        self, target: Union[str, PurePath]
-    ) -> AsyncPath:
+    async def rename(self, target: Union[str, PurePath]) -> AsyncPath:
         await aiofiles.os.rename(self, target)
         return self.__class__(target)
 

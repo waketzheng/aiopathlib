@@ -29,8 +29,8 @@ async def test_remove():
     await AsyncPath(filename).remove()
     assert exists(filename) is False
     with pytest.raises(FileNotFoundError):
-        await AsyncPath('not_exist_file').remove()
-    await AsyncPath('not_exist_file').remove(True)
+        await AsyncPath("not_exist_file").remove()
+    await AsyncPath("not_exist_file").remove(True)
 
 
 @pytest.mark.asyncio
