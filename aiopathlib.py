@@ -125,8 +125,6 @@ class AsyncPosixPath(AsyncPath, PosixPath):
     On a POSIX system, instantiating a AsyncPath should return this object.
     """
 
-    __slots__ = ()
-
 
 class AsyncWindowsPath(AsyncPath, WindowsPath):
     """AsyncPath subclass for Windows systems.
