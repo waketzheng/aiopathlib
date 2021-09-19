@@ -8,14 +8,40 @@ import pytest
 
 from aiopathlib import AsyncPath
 
-# @pytest.mark.asyncio
-# async def test_stat():
-#     """Test the stat call."""
-#     filename = join(dirname(__file__), "resources", "test_file1.txt")
-#
-#     stat_res = await aiofiles.os.stat(filename)
-#
-#     assert stat_res.st_size == 10
+
+@pytest.mark.asyncio
+async def test_stat_lstat_is_sth():
+    """Test the stat call."""
+    filename = join(dirname(__file__), "resources", "test_file1.txt")
+
+    stat_res = await AsyncPath(filename).stat()
+
+    assert stat_res.st_size == 10
+    p = Path(filename)
+    assert stat_res == p.stat()
+    ln = p.with_name(p.name + ".ln")
+    aln = AsyncPath(ln)
+    await aln.remove(True)
+    ln.symlink_to(p)
+    await aln.stat() == stat_res
+    lstat_res = await AsyncPath(ln).lstat()
+    lstat_res != stat_res
+    lstat_res.st_size < 10
+    assert await aln.is_symlink()
+    assert await aln.is_file()
+    assert not await aln.is_dir()
+    assert await aln.parent.is_dir()
+    await aln.remove(True)
+    assert not await aln.is_symlink()
+    assert not await aln.is_file()
+    assert not await aln.is_dir()
+    assert not await aln.is_mount()
+    assert not await aln.is_socket()
+    assert await AsyncPath("/").is_mount()
+    assert await AsyncPath("/dev").is_mount()
+    assert not await aln.is_char_device()
+    assert not await aln.is_block_device()
+    assert not await aln.is_fifo()
 
 
 @pytest.mark.asyncio
@@ -37,6 +63,12 @@ async def test_remove():
 async def test_mkdir_and_rmdir():
     """Test the mkdir and rmdir call."""
     directory = join(dirname(__file__), "resources", "test_dir")
+    ap = AsyncPath(directory)
+    if await ap.exists():
+        if await ap.is_dir():
+            await ap.rmdir()
+        else:
+            await ap.remove()
     await AsyncPath(directory).mkdir()
     assert isdir(directory)
     with pytest.raises(FileExistsError):

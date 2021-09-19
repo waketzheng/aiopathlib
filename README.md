@@ -55,7 +55,7 @@ $ pip install aiopathlib
 
 Usage
 -----
-
+These functions are awaitable
 
 * ``read_text``
 * ``read_bytes``
@@ -66,7 +66,17 @@ Usage
 * ``mkdir``
 * ``exists``
 * ``rename``
-* ``remove``
+* ``remove``/``unlink``
+* ``stat``
+* ``lstat``
+* ``is_file``
+* ``is_dir``
+* ``is_symlink``
+* ``is_fifo``
+* ``is_mount``
+* ``is_block_device``
+* ``is_char_device``
+* ``is_socket``
 
 
 History

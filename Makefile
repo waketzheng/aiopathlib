@@ -1,4 +1,4 @@
-checkfiles = aiopathlib.py
+checkfiles = aiopathlib.py tests/test_async.py
 black_opts = -l 88 -t py38
 .PHONY: lint 
 .DEFAULT_GOAL := help
