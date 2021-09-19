@@ -64,6 +64,7 @@ These functions are awaitable
 * ``write_bytes``
 * ``write_json``
 * ``mkdir``
+* ``touch``
 * ``exists``
 * ``rename``
 * ``remove``/``unlink``

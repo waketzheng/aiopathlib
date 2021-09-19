@@ -200,6 +200,20 @@ class AsyncPath(Path):
         """
         return await self._is_sth(S_ISSOCK)
 
+    async def touch(self, mode=0o666, exist_ok=True):
+        """
+        Create this file with the given access mode, if it doesn't exist.
+        """
+        if self._closed:
+            self._raise_closed()
+        if await self.exists() and not exist_ok:
+            raise FileExistsError
+        if mode == 0o666:
+            async with aiofiles.open(self, "wb") as af:
+                af.write(b"")
+        else:
+            return Path(self).touch(mode, exist_ok)
+
 
 class AsyncPosixPath(AsyncPath, PosixPath):
     """AsyncPath subclass for non-Windows systems.

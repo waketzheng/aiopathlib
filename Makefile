@@ -33,6 +33,7 @@ endif
 	twine check dist/*
 
 style: ## Auto-formats the code
+	autoflake --in-place --remove-all-unused-imports $(checkfiles)
 	isort -src $(checkfiles)
 	black $(black_opts) $(checkfiles)
 

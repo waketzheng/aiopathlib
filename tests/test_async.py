@@ -1,5 +1,6 @@
 """Tests for asyncio's os module."""
 import json
+import os
 from os.path import dirname, exists, isdir, join
 from pathlib import Path
 
@@ -40,8 +41,36 @@ async def test_stat_lstat_is_sth():
     assert await AsyncPath("/").is_mount()
     assert await AsyncPath("/dev").is_mount()
     assert not await aln.is_char_device()
+    char_path = list(Path("/dev").glob("tty*"))[0]
+    assert await AsyncPath(char_path).is_char_device()
     assert not await aln.is_block_device()
+    block_path = list(Path("/dev").glob("disk*"))[0]
+    assert await AsyncPath(block_path).is_block_device()
     assert not await aln.is_fifo()
+    ap = AsyncPath("fifo-test.foo")
+    await ap.remove(True)
+    # await ap.touch()
+    os.mkfifo(ap)
+    assert await ap.is_fifo()
+    await ap.remove(True)
+
+
+@pytest.mark.asyncio
+async def test_touch():
+    ap = AsyncPath("touch-test.foo")
+    await ap.remove(True)
+    await ap.touch()
+    assert (await ap.stat()).st_mode == 33188
+    assert await ap.exists()
+    with pytest.raises(FileExistsError):
+        await ap.touch(exist_ok=False)
+    await ap.remove(True)
+    await ap.touch(mode=511)
+    assert (await ap.stat()).st_mode != 33188
+    ap._closed = True
+    with pytest.raises(ValueError):
+        await ap.touch()
+    await ap.remove(True)
 
 
 @pytest.mark.asyncio
