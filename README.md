@@ -83,6 +83,11 @@ These functions are awaitable
 History
 -------
 
+#### 0.2.2 (2021-09-20)
+
+- Make `touch`/`stat`/`is_file`/... be awaitable.
+- Use `super().__new__` for initial.
+
 #### 0.2.0 (2021-08-29)
 
 - Make `AsyncPath` be subclass of `pathlib.Path`.
