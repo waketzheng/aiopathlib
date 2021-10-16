@@ -42,26 +42,39 @@ class AsyncPath(Path):
         except FileNotFoundError:
             return False
 
-    async def write_bytes(self, content: bytes) -> None:
-        await self.async_write(content, "wb")
+    async def write_bytes(self, content: bytes, *, loop=None, executor=None) -> None:
+        await self.async_write(content, "wb", loop=loop, executor=executor)
 
     async def write_text(
         self,
         text: str,
         encoding: Optional[str] = None,
         errors: Optional[str] = None,
+        *,
+        loop=None,
+        executor=None,
     ) -> None:
-        await self.async_write(text, "w", encoding=encoding, errors=errors)
+        await self.async_write(
+            text, "w", encoding=encoding, errors=errors, loop=loop, executor=executor
+        )
 
     async def write_json(
         self,
         context: JSONType,
         encoding: Optional[str] = None,
         errors: Optional[str] = None,
+        *,
+        loop=None,
+        executor=None,
         **kw,
     ) -> None:
         await self.async_write(
-            json.dumps(context, **kw), "w", encoding=encoding, errors=errors
+            json.dumps(context, **kw),
+            "w",
+            encoding=encoding,
+            errors=errors,
+            loop=loop,
+            executor=executor,
         )
 
     async def async_write(
@@ -70,11 +83,14 @@ class AsyncPath(Path):
         mode: Optional[str] = None,
         encoding: Optional[str] = None,
         errors: Optional[str] = None,
+        *,
+        loop=None,
+        executor=None,
     ):
         if mode is None:
             mode = "wb" if isinstance(ctx, bytes) else "w"
         async with aiofiles.open(
-            self, mode, encoding=encoding, errors=errors
+            self, mode, encoding=encoding, errors=errors, loop=loop, executor=executor
         ) as fp:  # type:ignore
             await fp.write(ctx)
 
@@ -82,20 +98,33 @@ class AsyncPath(Path):
         self,
         encoding: Optional[str] = None,
         errors: Optional[str] = None,
+        *,
+        loop=None,
+        executor=None,
     ) -> str:
-        async with aiofiles.open(self, encoding=encoding, errors=errors) as fp:
+        async with aiofiles.open(
+            self, encoding=encoding, errors=errors, loop=loop, executor=executor
+        ) as fp:
             return await fp.read()
 
-    async def read_bytes(self) -> bytes:
-        async with aiofiles.open(self, mode="rb") as fp:
+    async def read_bytes(self, *, loop=None, executor=None) -> bytes:
+        async with aiofiles.open(self, mode="rb", loop=loop, executor=executor) as fp:
             return await fp.read()
 
     async def read_json(
-        self, encoding: Optional[str] = None, errors: Optional[str] = None, **kw
+        self,
+        encoding: Optional[str] = None,
+        errors: Optional[str] = None,
+        *,
+        loop=None,
+        executor=None,
+        **kw,
     ) -> JSONType:
         return json.loads(await self.read_text(encoding, errors), **kw)
 
     async def remove(self, missing_ok: bool = False) -> None:
+        if await self.is_dir():
+            return await self.rmdir()
         return await self.unlink(missing_ok)
 
     async def rmdir(self) -> None:
