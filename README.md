@@ -28,6 +28,8 @@ b'My file contents'
 Asynchronous interface to create folder.
 
 ```py
+from aiopathlib import AsyncPath
+
 apath = AsyncPath('dirname/subpath')
 if not await apath.exists():
     await apath.mkdir(parents=True)
@@ -78,6 +80,47 @@ These functions are awaitable
 * ``is_block_device``
 * ``is_char_device``
 * ``is_socket``
+
+Example
+-------
+Some common using cases:
+
+```
+from pashlib import Path
+from aiopathlib import AsyncPath
+
+filename = 'test.json'
+ap = AsyncPath(filename)
+p = Path(filename)
+assert (await ap.exists()) == p.exists() == False
+await ap.touch()  # Create a empty file
+assert (await ap.is_file()) == p.is_file() == True
+assert (await ap.is_dir()) == p.is_dir() == False
+assert (await ap.is_symlink()) == p.is_symlink() == False
+for func in ('is_fifo', 'is_mount', 'is_block_device', 'is_char_device', 'is_socket'):
+    assert (await getattr(ap, func)()) == getattr(p, func)()
+d = {'key': 'value'}
+await ap.write_json(d)  # == p.write_text(json.dumps(d))
+assert (await ap.read_json()) == d  # == json.loads(p.read_text())
+assert (await ap.read_bytes()) == p.read_bytes()  # b'{"key": "value"}'
+assert (await ap.stat()) == p.stat()
+assert (await ap.lstat()) == p.lstat()
+ap = await ap.rename('test_dir')  # == AsyncPath(p.rename('test_dir'))
+await ap.remove()  # == await ap.unlink() == p.unlink()
+await ap.mkdir()  # == p.mkdir()
+
+# Synchronization functions
+list(ap.glob('*')) == list(ap.glob('*'))
+list(ap.rglob('*')) == list(ap.rglob('*'))
+ap / 'filename' == ap.joinpath('filename') == AsyncPath(f'{ap}/filename')
+str(AsyncPath('string-or-Path-or-AsyncPath')) == str(Path('string-or-Path-or-AsyncPath'))
+ap.stem == p.stem
+ap.suffix == p.suffix
+Path(ap.with_name('xxx')) == p.with_name('xxx')
+Path(ap.parent) == p.parent
+Path(ap.resolve()) == p.resolve()
+...
+```
 
 
 History
