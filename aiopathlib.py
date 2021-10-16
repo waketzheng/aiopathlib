@@ -204,7 +204,7 @@ class AsyncPath(Path):
         """
         Create this file with the given access mode, if it doesn't exist.
         """
-        if self._closed:
+        if getattr(self, "_closed", False) and hasattr(self, "_raise_closed"):
             self._raise_closed()
         if await self.exists() and not exist_ok:
             raise FileExistsError

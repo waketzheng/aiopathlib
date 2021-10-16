@@ -83,6 +83,11 @@ These functions are awaitable
 History
 -------
 
+#### 0.2.3 (2021-10-16)
+
+- Make `touch` pass test for py39.
+- Remove support for pypy3 from docs.
+
 #### 0.2.2 (2021-09-20)
 
 - Make `touch`/`stat`/`is_file`/... be awaitable.

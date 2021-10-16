@@ -44,7 +44,10 @@ async def test_stat_lstat_is_sth():
     char_path = list(Path("/dev").glob("tty*"))[0]
     assert await AsyncPath(char_path).is_char_device()
     assert not await aln.is_block_device()
-    block_path = list(Path("/dev").glob("disk*"))[0]
+    if block_paths := list(Path("/dev").glob("loop*")):
+        block_path = block_paths[0]
+    else:
+        block_path = list(Path("/dev").glob("disk*"))[0]
     assert await AsyncPath(block_path).is_block_device()
     assert not await aln.is_fifo()
     ap = AsyncPath("fifo-test.foo")
@@ -60,16 +63,17 @@ async def test_touch():
     ap = AsyncPath("touch-test.foo")
     await ap.remove(True)
     await ap.touch()
-    assert (await ap.stat()).st_mode == 33188
+    assert (await ap.stat()).st_mode in [33204, 33188]
     assert await ap.exists()
     with pytest.raises(FileExistsError):
         await ap.touch(exist_ok=False)
     await ap.remove(True)
     await ap.touch(mode=511)
     assert (await ap.stat()).st_mode != 33188
-    ap._closed = True
-    with pytest.raises(ValueError):
-        await ap.touch()
+    if hasattr(ap, "_raise_closed"):
+        ap._closed = True
+        with pytest.raises(ValueError):
+            await ap.touch()
     await ap.remove(True)
 
 

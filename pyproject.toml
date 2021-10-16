@@ -86,7 +86,7 @@ python =
     3.9: py39
 
 [tox]
-envlist = py38, py39, pypy3
+envlist = py38, py39
 isolated_build = True
 
 [testenv]
