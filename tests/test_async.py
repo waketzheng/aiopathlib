@@ -90,7 +90,7 @@ async def test_remove():
     with pytest.raises(FileNotFoundError):
         await AsyncPath("not_exist_file").remove()
     await AsyncPath("not_exist_file").remove(True)
-    folder = AsyncPath('folder_for_test')
+    folder = AsyncPath("folder_for_test")
     await folder.mkdir()
     with pytest.raises(PermissionError):
         await folder.unlink()

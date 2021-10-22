@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path, PosixPath, PurePath, WindowsPath, _ignore_error  # type:ignore
 from stat import S_ISBLK, S_ISCHR, S_ISDIR, S_ISFIFO, S_ISLNK, S_ISREG, S_ISSOCK
-from typing import Optional, Union
+from typing import Generator, Optional, Union
 
 import aiofiles
 import aiofiles.os
@@ -242,6 +242,12 @@ class AsyncPath(Path):
                 af.write(b"")
         else:
             return Path(self).touch(mode, exist_ok)
+
+    def glob(self, pattern: str) -> Generator[Path, None, None]:
+        return Path(self).glob(pattern)
+
+    def rglob(self, pattern: str) -> Generator[Path, None, None]:
+        return Path(self).rglob(pattern)
 
 
 class AsyncPosixPath(AsyncPath, PosixPath):
