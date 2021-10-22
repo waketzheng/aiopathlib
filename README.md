@@ -13,8 +13,8 @@ disk files in asyncio applications.
 Base on `aiofiles` and just like pathlib, but use await.
 
 ```py
-with open('filename', 'w') as f:
-    f.write('My file contents')
+with open('filename', 'w') as fp:
+    fp.write('My file contents')
 
 text = await aiopathlib.AsyncPath('filename').read_text()
 print(text)
@@ -47,7 +47,7 @@ Features
 Installation
 ------------
 
-To install aiofiles, simply:
+To install aiopathlib, simply:
 
 
 ```bash
@@ -69,7 +69,9 @@ These functions are awaitable
 * ``touch``
 * ``exists``
 * ``rename``
-* ``remove``/``unlink``
+* ``unlink``
+* ``rmdir``
+* ``remove``
 * ``stat``
 * ``lstat``
 * ``is_file``
@@ -110,8 +112,8 @@ await ap.remove()  # == await ap.unlink() == p.unlink()
 await ap.mkdir()  # == p.mkdir()
 
 # Synchronization functions
-list(ap.glob('*')) == list(ap.glob('*'))
-list(ap.rglob('*')) == list(ap.rglob('*'))
+[Path(i) for i in ap.glob('*')] == list(p.glob('*'))
+[Path(i) for i in ap.rglob('*')] == list(p.rglob('*'))
 ap / 'filename' == ap.joinpath('filename') == AsyncPath(f'{ap}/filename')
 str(AsyncPath('string-or-Path-or-AsyncPath')) == str(Path('string-or-Path-or-AsyncPath'))
 ap.stem == p.stem
