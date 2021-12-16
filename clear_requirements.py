@@ -13,7 +13,7 @@ async def clear_it(filename):
         name, version = package.strip().split("==")
         v = unique.get(name)
         if not v or v[0] < version:
-            unique[name] = (version, i)
+            unique[name] = (version, package)
         else:
             print(name, "already exists! Ignore.")
     lines_count = len(unique)
