@@ -44,7 +44,8 @@ async def test_stat_lstat_is_sth():
     char_path = list(Path("/dev").glob("tty*"))[0]
     assert await AsyncPath(char_path).is_char_device()
     assert not await aln.is_block_device()
-    if block_paths := list(Path("/dev").glob("loop*")):
+    block_paths = list(Path("/dev").glob("loop*"))
+    if block_paths:
         block_path = block_paths[0]
     else:
         block_path = list(Path("/dev").glob("disk*"))[0]
