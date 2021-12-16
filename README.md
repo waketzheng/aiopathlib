@@ -128,6 +128,11 @@ Path(ap.resolve()) == p.resolve()
 History
 -------
 
+#### 0.3.0 (2021-12-16)
+
+- Support Python3.7
+- Clear `dev_requirements.txt` to be only package name and version
+
 #### 0.2.3 (2021-10-16)
 
 - Make `touch` pass test for py39.
