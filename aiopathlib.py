@@ -42,8 +42,8 @@ class AsyncPath(Path):
         except FileNotFoundError:
             return False
 
-    async def write_bytes(self, content: bytes, *, loop=None, executor=None) -> None:
-        await self.async_write(content, "wb", loop=loop, executor=executor)
+    async def write_bytes(self, content: bytes, *, loop=None, executor=None) -> int:
+        return await self.async_write(content, "wb", loop=loop, executor=executor)
 
     async def write_text(
         self,
@@ -53,8 +53,8 @@ class AsyncPath(Path):
         *,
         loop=None,
         executor=None,
-    ) -> None:
-        await self.async_write(
+    ) -> int:
+        return await self.async_write(
             text, "w", encoding=encoding, errors=errors, loop=loop, executor=executor
         )
 
@@ -67,8 +67,8 @@ class AsyncPath(Path):
         loop=None,
         executor=None,
         **kw,
-    ) -> None:
-        await self.async_write(
+    ) -> int:
+        return await self.async_write(
             json.dumps(context, **kw),
             "w",
             encoding=encoding,
@@ -86,13 +86,13 @@ class AsyncPath(Path):
         *,
         loop=None,
         executor=None,
-    ):
+    ) -> int:
         if mode is None:
             mode = "wb" if isinstance(ctx, bytes) else "w"
         async with aiofiles.open(
             self, mode, encoding=encoding, errors=errors, loop=loop, executor=executor
         ) as fp:  # type:ignore
-            await fp.write(ctx)
+            return await fp.write(ctx)
 
     async def read_text(
         self,
@@ -165,20 +165,20 @@ class AsyncPath(Path):
             # Non-encodable path
             return False
 
-    async def is_dir(self):
+    async def is_dir(self) -> bool:
         """
         Whether this path is a directory.
         """
         return await self._is_sth(S_ISDIR)
 
-    async def is_file(self):
+    async def is_file(self) -> bool:
         """
         Whether this path is a regular file (also True for symlinks pointing
         to regular files).
         """
         return await self._is_sth(S_ISREG)
 
-    async def is_mount(self):
+    async def is_mount(self) -> bool:
         """
         Check if this path is a POSIX mount point
         """
@@ -199,31 +199,31 @@ class AsyncPath(Path):
         parent_ino = pst.st_ino
         return ino == parent_ino
 
-    async def is_symlink(self):
+    async def is_symlink(self) -> bool:
         """
         Whether this path is a symbolic link.
         """
         return await self._is_sth(S_ISLNK, True)
 
-    async def is_block_device(self):
+    async def is_block_device(self) -> bool:
         """
         Whether this path is a block device.
         """
         return await self._is_sth(S_ISBLK)
 
-    async def is_char_device(self):
+    async def is_char_device(self) -> bool:
         """
         Whether this path is a character device.
         """
         return await self._is_sth(S_ISCHR)
 
-    async def is_fifo(self):
+    async def is_fifo(self) -> bool:
         """
         Whether this path is a FIFO.
         """
         return await self._is_sth(S_ISFIFO)
 
-    async def is_socket(self):
+    async def is_socket(self) -> bool:
         """
         Whether this path is a socket.
         """

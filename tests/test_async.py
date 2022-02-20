@@ -154,13 +154,18 @@ async def test_rename():
 async def test_write():
     """Test the write call."""
     filename = join(dirname(__file__), "resources", "test_write.txt")
-    await AsyncPath(filename).write_bytes(b"1")
+    size = await AsyncPath(filename).write_bytes(b"1")
     assert Path(filename).read_bytes() == b"1"
-    await AsyncPath(filename).write_text("2")
-    assert Path(filename).read_text() == "2"
-    await AsyncPath(filename).write_json({"key": 3})
-    assert Path(filename).read_text() == json.dumps({"key": 3})
-    assert await AsyncPath(filename).read_json() == {"key": 3}
+    assert size == 1
+    size = await AsyncPath(filename).write_text("22")
+    assert Path(filename).read_text() == "22"
+    assert size == 2
+    data = {"key": 3}
+    size = await AsyncPath(filename).write_json(data)
+    content = json.dumps(data)
+    assert Path(filename).read_text() == content
+    assert await AsyncPath(filename).read_json() == data
+    assert size == len(content)
     await AsyncPath(filename).async_write(b"4")
     assert Path(filename).read_bytes() == b"4"
     assert await AsyncPath(filename).read_bytes() == b"4"
