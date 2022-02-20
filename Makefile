@@ -14,6 +14,9 @@ build:  ## Build wheel and zip
 	poetry build
 
 publish: build
+ifeq ($(shell which twine),)
+	pip install twine --user
+endif
 	twine upload dist/*
 
 lint: ## Reformat with isort and black, then check style with flake8 and mypy
@@ -46,4 +49,4 @@ ifeq ($(shell which bumpversion),)
 	pip install bumpversion
 endif
 	bumpversion patch  # major/minor/patch
-	git log
+	git log -3

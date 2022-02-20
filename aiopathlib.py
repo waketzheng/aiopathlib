@@ -66,10 +66,10 @@ class AsyncPath(Path):
         *,
         loop=None,
         executor=None,
-        **kw,
+        **json_dump_kwargs,
     ) -> int:
         return await self.async_write(
-            json.dumps(context, **kw),
+            json.dumps(context, **json_dump_kwargs),
             "w",
             encoding=encoding,
             errors=errors,

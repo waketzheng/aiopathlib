@@ -10,7 +10,7 @@ aiopathlib: Pathlib support for asyncio
 **aiopathlib** is written in Python, for handling local
 disk files in asyncio applications.
 
-Base on `aiofiles` and just like pathlib, but use await.
+Base on [aiofiles](https://github.com/Tinche/aiofiles) and just like pathlib, but use await.
 
 ```py
 with open('filename', 'w') as fp:
@@ -127,6 +127,11 @@ Path(ap.resolve()) == p.resolve()
 
 History
 -------
+
+#### 0.3.1 (2022-02-20)
+
+- Return content size after write local file
+- Upgrade dependencies
 
 #### 0.3.0 (2021-12-16)
 
