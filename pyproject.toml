@@ -25,9 +25,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Framework :: AsyncIO",
 ]
-include = [
-    "LICENSE",
-]
+include = ["LICENSE", "README.md"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -78,7 +76,7 @@ use_parentheses = true
 
 [tool.coverage]
     [tool.coverage.report]
-    include = ['aiopathlib.py']
+    include = ['aiopathlib/*']
 
 [tool.tox]
 legacy_tox_ini = """
