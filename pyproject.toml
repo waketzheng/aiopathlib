@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiopathlib"
-version = "0.3.1"
+version = "0.5.0"
 description = "Pathlib support for asyncio"
 authors = ["Waket Zheng <waketzheng@gmail.com>"]
 license = "MIT"
@@ -13,7 +13,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -28,8 +27,8 @@ classifiers = [
 include = ["LICENSE", "README.md"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-aiofiles = "^0.7.0"
+python = "^3.8"
+aiofiles = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.7b0"
@@ -40,6 +39,7 @@ flake8 = "^3.9.2"
 types-aiofiles = "^0.1.9"
 pytest-asyncio = "^0.15.1"
 coverage = "^5.5"
+autoflake = "^1.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -82,13 +82,12 @@ use_parentheses = true
 legacy_tox_ini = """
 [gh-actions]
 python =
-    3.7: py37
     3.8: py38
     3.9: py39
     3.10: py310
 
 [tox]
-envlist = py37, py38, py39, py310
+envlist = py38, py39, py310
 isolated_build = True
 
 [testenv]

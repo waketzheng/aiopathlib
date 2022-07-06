@@ -1,4 +1,4 @@
-checkfiles = aiopathlib/__init__.py tests/test_async.py
+checkfiles = aiopathlib/__init__.py tests/test_async.py tests/test_sync.py
 black_opts = -l 88 -t py38
 .PHONY: lint 
 .DEFAULT_GOAL := help
@@ -31,8 +31,7 @@ ifneq ($(shell which black),)
 endif
 	flake8 $(checkfiles)
 	mypy $(checkfiles)
-	#pylint -d C,W,R $(checkfiles)
-	bandit -r $(checkfiles)
+	bandit -r aiopathlib
 	twine check dist/*
 
 style: ## Auto-formats the code
