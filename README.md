@@ -7,6 +7,38 @@ aiopathlib: Pathlib support for asyncio
 [![image](https://img.shields.io/codecov/c/github/waketzheng/aiopathlib/master.svg)](https://codecov.io/github/waketzheng/aiopathlib?branch=master)
 [![image](https://img.shields.io/badge/code%20style-pep8-green.svg)](https://www.python.org/dev/peps/pep-0008/)
 
+> This project is going to be deprecated. Use `anyio.Path` instead:
+Install:
+```bash
+pip install anyio
+```
+Examples:
+```py
+from datetime import datetime
+from anyio import Path
+
+filepath = Path(__file__)
+another = filepath.parent / 'sub_dirpath' / 'filename.ext'
+
+if await another.exists():
+    content = await another.read_bytes()
+elif not await another.parent.exists():
+    await another.parent.mkdir(parents=True)
+else:
+    await another.write_bytes(b'1')
+
+# glob/stat/remove
+async for p in filepath.parent.glob('*'):
+    if await p.is_file():
+        stat = await p.stat()
+        create_time = datetime.fromtimestamp(stat.st_ctime)
+        update_time = datetime.fromtimestamp(stat.st_mtime)
+        await p.unlink()  # remove file
+        print(f'{p} created at: {create_time}, modified at: {update_time}, removed at: {datetime.now()}')
+```
+See more at: https://github.com/agronholm/anyio
+
+------
 **aiopathlib** is written in Python, for handling local
 disk files in asyncio applications.
 
