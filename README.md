@@ -8,6 +8,7 @@ aiopathlib: Pathlib support for asyncio
 [![image](https://img.shields.io/badge/code%20style-pep8-green.svg)](https://www.python.org/dev/peps/pep-0008/)
 
 > This project is going to be deprecated. Use `anyio.Path` instead:
+
 Install:
 ```bash
 pip install anyio
