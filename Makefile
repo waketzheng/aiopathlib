@@ -14,7 +14,7 @@ deps:
 	$(MAKE) sync options="--frozen --inexact"
 
 build:  ## Build wheel and zip
-	uv build
+	python -m build
 
 publish: build
 	twine check dist/*
