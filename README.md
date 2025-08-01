@@ -161,6 +161,9 @@ Path(ap.resolve()) == p.resolve()
 History
 -------
 
+#### 0.6.0 (2025-08-01)
+- Migrate from poetry to uv
+
 #### 0.3.1 (2022-02-20)
 
 - Return content size after write local file
