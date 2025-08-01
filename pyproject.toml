@@ -111,8 +111,8 @@ isolated_build = True
 
 [testenv]
 commands =
-    pip install --upgrade pip
-    pip install --group test -e .
+    pip install --upgrade pip pytest-asyncio coverage
+    pip install -e .
     coverage run --source aiopathlib -m pytest tests
 passenv = CI
 """
