@@ -111,6 +111,7 @@ isolated_build = True
 
 [testenv]
 commands =
+    pip install --upgrade pip
     pip install --group test -e .
     coverage run --source aiopathlib -m pytest tests
 passenv = CI
