@@ -5,18 +5,14 @@ aiopathlib: Pathlib support for asyncio
 [![image](https://img.shields.io/pypi/pyversions/aiopathlib.svg)](https://pypi.org/project/aiopathlib/)
 [![image](https://img.shields.io/pypi/l/aiopathlib.svg)](https://pypi.org/project/aiopathlib/)
 [![image](https://img.shields.io/codecov/c/github/waketzheng/aiopathlib/master.svg)](https://codecov.io/github/waketzheng/aiopathlib?branch=master)
-[![image](https://img.shields.io/badge/code%20style-pep8-green.svg)](https://www.python.org/dev/peps/pep-0008/)
+![Mypy coverage](https://img.shields.io/badge/mypy-100%25-green.svg)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 > If you are not using aiofiles, `anyio.Path` is another choice:
 
-Install:
-```bash
-pip install anyio
-```
-Examples:
 ```py
 from datetime import datetime
-from anyio import Path
+from anyio import Path  # pip install anyio
 
 filepath = Path(__file__)
 another = filepath.parent / 'sub_dirpath' / 'filename.ext'
@@ -47,15 +43,20 @@ Base on [aiofiles](https://github.com/Tinche/aiofiles) and just like pathlib, bu
 
 ```py
 with open('filename', 'w') as fp:
-    fp.write('My file contents')
+    fp.write('{"msg":"My file contents"}')
 
-text = await aiopathlib.AsyncPath('filename').read_text()
-print(text)
-'My file contents'
+apath = aiopathlib.AsyncPath('filename')
+text = await apath.read_text()
+print(repr(text))
+# '{"msg":"My file contents"}'
 
-content = await aiopathlib.AsyncPath(Path('filename')).read_bytes()
+content = await apath.read_bytes()
 print(content)
-b'My file contents'
+# b'{"msg":"My file contents"}'
+
+data = await apath.read_json()
+print(data)
+# {"msg": "My file contents"}
 ```
 
 Asynchronous interface to create folder.
@@ -143,6 +144,7 @@ assert (await ap.lstat()) == p.lstat()
 ap = await ap.rename('test_dir')  # == AsyncPath(p.rename('test_dir'))
 await ap.remove()  # == await ap.unlink() == p.unlink()
 await ap.mkdir()  # == p.mkdir()
+await ap.resolve() # == AsyncPath(p.resolve())
 
 # Synchronization functions
 [Path(i) for i in ap.glob('*')] == list(p.glob('*'))
@@ -153,7 +155,6 @@ ap.stem == p.stem
 ap.suffix == p.suffix
 Path(ap.with_name('xxx')) == p.with_name('xxx')
 Path(ap.parent) == p.parent
-Path(ap.resolve()) == p.resolve()
 ...
 ```
 
@@ -161,45 +162,7 @@ Path(ap.resolve()) == p.resolve()
 History
 -------
 
-#### 0.6.0 (2025-08-01)
-- Migrate from poetry to uv
-
-#### 0.3.1 (2022-02-20)
-
-- Return content size after write local file
-- Upgrade dependencies
-
-#### 0.3.0 (2021-12-16)
-
-- Support Python3.7
-- Clear `dev_requirements.txt` to be only package name and version
-
-#### 0.2.3 (2021-10-16)
-
-- Make `touch` pass test for py39.
-- Remove support for pypy3 from docs.
-
-#### 0.2.2 (2021-09-20)
-
-- Make `touch`/`stat`/`is_file`/... be awaitable.
-- Use `super().__new__` for initial.
-
-#### 0.2.0 (2021-08-29)
-
-- Make `AsyncPath` be subclass of `pathlib.Path`.
-- Add github action to show test coverage.
-
-#### 0.1.3 (2021-08-28)
-
-- Add makefile.
-- Test all functions.
-- Fix rename method error.
-- Support sync pathlib methods.
-
-#### 0.1.0 (2021-06-14)
-
-- Introduced a changelog.
-- Publish at gitee.
+See the [CHANGELOG.md](https://github.com/waketzheng/aiopathlib/blob/master/CHANGELOG.md) file for details.
 
 
 Contributing
