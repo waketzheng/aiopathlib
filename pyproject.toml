@@ -1,12 +1,10 @@
-[tool.poetry]
+[project]
 name = "aiopathlib"
-version = "0.5.0"
+dynamic = ["version"]
 description = "Pathlib support for asyncio"
-authors = ["Waket Zheng <waketzheng@gmail.com>"]
-license = "MIT"
+authors = [{name="Waket Zheng", email="waketzheng@gmail.com"}]
+license = {text="MIT"}
 readme = "README.md"
-homepage = "https://github.com/waketzheng/aiopathlib"
-repository = "https://github.com/waketzheng/aiopathlib"
 keywords = ["aiopathlib", "asyncpath", "aiopath"]
 classifiers = [
     "License :: OSI Approved :: MIT License",
@@ -16,6 +14,9 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
     "Operating System :: POSIX",
     "Environment :: Web Environment",
@@ -25,58 +26,72 @@ classifiers = [
     "Framework :: AsyncIO",
 ]
 include = ["LICENSE", "README.md"]
+dependencies = [
+    "aiofiles >=0.8.0",
+]
+requires-python = ">=3.8"
 
-[tool.poetry.dependencies]
-python = "^3.8"
-aiofiles = "^0.8.0"
+[project.urls]
+homepage = "https://github.com/waketzheng/aiopathlib"
+repository = "https://github.com/waketzheng/aiopathlib.git"
+"Bug Tracker" = "https://github.com/waketzheng/aiopathlib/issues"
 
-[tool.poetry.dev-dependencies]
-black = "^21.7b0"
-isort = "^5.9.3"
-mypy = "^0.910"
-bandit = "^1.7.0"
-flake8 = "^3.9.2"
-types-aiofiles = "^0.1.9"
-pytest-asyncio = "^0.15.1"
-coverage = "^5.5"
-autoflake = "^1.4"
+[tool.pdm]
+version = {source="file", path="aiopathlib/__init__.py"}
+
+[dependency-groups]
+dev = [
+    "typing-extensions>=4.13.2",
+    "bandit>=1.7.10",
+    "mypy>=1.14.1",
+    "ruff>=0.12.7",
+    "types-aiofiles>=24.1.0.20241221",
+    "fast-dev-cli; python_version >= '3.9'",
+    "twine>=6.1.0",
+]
+test = [
+    "pytest-asyncio>=0.24.0",
+    "coverage>=7.6.1",
+]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+extend-select = [
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "I",      # https://docs.astral.sh/ruff/rules/#isort-i
+    "SIM",    # https://docs.astral.sh/ruff/rules/#flake8-simplify-sim
+    "FA",     # https://docs.astral.sh/ruff/rules/#flake8-future-annotations-fa
+    "UP",     # https://docs.astral.sh/ruff/rules/#pyupgrade-up
+    "RUF100", # https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
+[tool.coverage.run]
+source = ["aiopathlib"]
+omit = [
+    # omit anything in a .cache directory anywhere
+    "*/.cache/*",
+    # omit everything in /usr
+    "/usr/*",
+    # omit this single file
+    "_types.py",
+]
+[tool.coverage.report]
+include = ['aiopathlib/*']
+omit = ["*/tests/*", "test_*"]
+exclude_lines = [
+    "pragma: no cover",
+    "@overload",
+    'if __name__ == "__main__":',
+    "if TYPE_CHECKING:",
+]
 
-# NOTE: you have to use single-quoted strings in TOML for regular expressions.
-# It's the equivalent of r-strings in Python.  Multiline strings are treated as
-# verbose regular expressions by Black.  Use [ ] to denote a significant space
-# character.
-
-[tool.black]
-line-length = 88
-py38 = true
-exclude = '''
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.mypy_cache
-    | \.pytest_cache
-    | \.tox
-    | \.venv
-'''
-
-[tool.isort]
-profile = "black"
-known_third_party = "aiofiles"
-skip = "build,.tox,.venv,.git,.pytest_cache,.mypy_cache"
-multi_line_output = 5
-include_trailing_comma = true
-force_grid_wrap = 0
-force_single_line = false
-balanced_wrapping = true
-use_parentheses = true
-
-[tool.coverage]
-    [tool.coverage.report]
-    include = ['aiopathlib/*']
 
 [tool.tox]
 legacy_tox_ini = """
@@ -85,17 +100,27 @@ python =
     3.8: py38
     3.9: py39
     3.10: py310
+    3.11: py311
+    3.12: py312
+    3.13: py313
 
 [tox]
-envlist = py38, py39, py310
+envlist = py38, py39, py310, py311, py312, py313
 isolated_build = True
 
 [testenv]
 commands =
-    pip install -r dev_requirements.txt
+    pip install --group test -e .
     coverage run --source aiopathlib -m pytest tests
 passenv = CI
 """
 
 [tool.mypy]
+pretty = true
+python_version = "3.9"
+check_untyped_defs = true
+warn_unused_ignores = true
 disable_error_code = "override"
+
+[tool.bandit]
+exclude_dirs = ["tests", "dist", "scripts", ".venv"]

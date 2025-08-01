@@ -1,4 +1,6 @@
 """Tests for asyncio's os module."""
+
+import contextlib
 import json
 import os
 from os.path import dirname, exists, isdir, join
@@ -24,10 +26,10 @@ async def test_stat_lstat_is_sth():
     aln = AsyncPath(ln)
     await aln.remove(True)
     ln.symlink_to(p)
-    await aln.stat() == stat_res
+    assert (await aln.stat()) == stat_res
     lstat_res = await AsyncPath(ln).lstat()
-    lstat_res != stat_res
-    lstat_res.st_size < 10
+    assert lstat_res != stat_res
+    assert lstat_res.st_size != stat_res.st_size
     assert await aln.is_symlink()
     assert await aln.is_file()
     assert not await aln.is_dir()
@@ -45,10 +47,7 @@ async def test_stat_lstat_is_sth():
     assert await AsyncPath(char_path).is_char_device()
     assert not await aln.is_block_device()
     block_paths = list(Path("/dev").glob("loop*"))
-    if block_paths:
-        block_path = block_paths[0]
-    else:
-        block_path = list(Path("/dev").glob("disk*"))[0]
+    block_path = block_paths[0] if block_paths else list(Path("/dev").glob("disk*"))[0]
     assert await AsyncPath(block_path).is_block_device()
     assert not await aln.is_fifo()
     ap = AsyncPath("fifo-test.foo")
@@ -72,7 +71,7 @@ async def test_touch():
     await ap.touch(mode=511)
     assert (await ap.stat()).st_mode != 33188
     if hasattr(ap, "_raise_closed"):
-        ap._closed = True
+        ap._closed = True  # type:ignore
         with pytest.raises(ValueError):
             await ap.touch()
     await ap.remove(True)
@@ -92,10 +91,8 @@ async def test_remove():
         await AsyncPath("not_exist_file").remove()
     await AsyncPath("not_exist_file").remove(True)
     folder = AsyncPath("folder_for_test")
-    try:
+    with contextlib.suppress(FileNotFoundError):
         os.rmdir(folder)
-    except FileNotFoundError:
-        ...
     await folder.mkdir()
     with pytest.raises((PermissionError, IsADirectoryError)):
         await folder.unlink()
@@ -117,7 +114,7 @@ async def test_mkdir_and_rmdir():
     assert isdir(directory)
     with pytest.raises(FileExistsError):
         await AsyncPath(directory).mkdir()
-    assert (await AsyncPath(directory).mkdir(exist_ok=True)) is None
+    assert (await ap.mkdir(exist_ok=True)) is None  # type:ignore
     await AsyncPath(directory).rmdir()
     assert exists(directory) is False
 

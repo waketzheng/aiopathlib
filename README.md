@@ -7,7 +7,7 @@ aiopathlib: Pathlib support for asyncio
 [![image](https://img.shields.io/codecov/c/github/waketzheng/aiopathlib/master.svg)](https://codecov.io/github/waketzheng/aiopathlib?branch=master)
 [![image](https://img.shields.io/badge/code%20style-pep8-green.svg)](https://www.python.org/dev/peps/pep-0008/)
 
-> This project is going to be deprecated. Use `anyio.Path` instead:
+> If you are not using aiofiles, `anyio.Path` is another choice:
 
 Install:
 ```bash

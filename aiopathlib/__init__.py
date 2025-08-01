@@ -2,22 +2,37 @@ from __future__ import annotations
 
 import json
 import os
-from pathlib import Path, PosixPath, PurePath, WindowsPath, _ignore_error  # type:ignore
+import sys
+from pathlib import Path, PosixPath, PurePath, WindowsPath
 from stat import S_ISBLK, S_ISCHR, S_ISDIR, S_ISFIFO, S_ISLNK, S_ISREG, S_ISSOCK
-from typing import Generator, Optional, Union
+from typing import TYPE_CHECKING, Generator, Union
 
 import aiofiles
 import aiofiles.os
 
+try:
+    from pathlib import _ignore_error  # type:ignore
+except ImportError:
+
+    def _ignore_error(e: Exception) -> bool:
+        return True
+
+
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 11):
+        from typing import Self
+    else:
+        from typing_extensions import Self
+
+__version__ = "0.6.0"
 JSONType = Union[list, dict, int, str, float, bool, None]
 
 
 class AsyncPath(Path):
     def __new__(cls, *args, **kwargs):
-        path = super().__new__(Path, *args, **kwargs)
         if cls is AsyncPath:
             cls = AsyncWindowsPath if os.name == "nt" else AsyncPosixPath
-        return cls._from_parts([path])
+        return super().__new__(cls, *args, **kwargs)
 
     async def mkdir(
         self, mode: int = 511, parents: bool = False, exist_ok: bool = False
@@ -48,8 +63,8 @@ class AsyncPath(Path):
     async def write_text(
         self,
         text: str,
-        encoding: Optional[str] = None,
-        errors: Optional[str] = None,
+        encoding: str | None = None,
+        errors: str | None = None,
         *,
         loop=None,
         executor=None,
@@ -61,8 +76,8 @@ class AsyncPath(Path):
     async def write_json(
         self,
         context: JSONType,
-        encoding: Optional[str] = None,
-        errors: Optional[str] = None,
+        encoding: str | None = None,
+        errors: str | None = None,
         *,
         loop=None,
         executor=None,
@@ -79,10 +94,10 @@ class AsyncPath(Path):
 
     async def async_write(
         self,
-        ctx: Union[bytes, str],
-        mode: Optional[str] = None,
-        encoding: Optional[str] = None,
-        errors: Optional[str] = None,
+        ctx: bytes | str,
+        mode: str | None = None,
+        encoding: str | None = None,
+        errors: str | None = None,
         *,
         loop=None,
         executor=None,
@@ -96,8 +111,8 @@ class AsyncPath(Path):
 
     async def read_text(
         self,
-        encoding: Optional[str] = None,
-        errors: Optional[str] = None,
+        encoding: str | None = None,
+        errors: str | None = None,
         *,
         loop=None,
         executor=None,
@@ -113,8 +128,8 @@ class AsyncPath(Path):
 
     async def read_json(
         self,
-        encoding: Optional[str] = None,
-        errors: Optional[str] = None,
+        encoding: str | None = None,
+        errors: str | None = None,
         *,
         loop=None,
         executor=None,
@@ -137,7 +152,7 @@ class AsyncPath(Path):
             if not missing_ok:
                 raise
 
-    async def rename(self, target: Union[str, PurePath]) -> AsyncPath:
+    async def rename(self, target: str | PurePath) -> Self:
         await aiofiles.os.rename(self, target)
         return self.__class__(target)
 
@@ -239,7 +254,7 @@ class AsyncPath(Path):
             raise FileExistsError
         if mode == 0o666:
             async with aiofiles.open(self, "wb") as af:
-                af.write(b"")
+                await af.write(b"")
         else:
             return Path(self).touch(mode, exist_ok)
 
