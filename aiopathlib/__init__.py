@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Generator, Union
 
 import aiofiles
 import aiofiles.os
+import aiofiles.ospath
 
 try:
     from pathlib import _ignore_error  # type:ignore
@@ -257,6 +258,10 @@ class AsyncPath(Path):
                 await af.write(b"")
         else:
             return Path(self).touch(mode, exist_ok)
+
+    async def resolve(self) -> Self:
+        abspath = await aiofiles.ospath.abspath(str(self))
+        return self.__class__(abspath)
 
     def glob(self, pattern: str) -> Generator[Path, None, None]:
         return Path(self).glob(pattern)

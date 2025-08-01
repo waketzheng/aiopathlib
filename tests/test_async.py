@@ -174,3 +174,13 @@ async def test_write():
     assert await AsyncPath(Path(new_name)).exists()
     await AsyncPath(new_name).unlink()
     assert not exists(new_name)
+
+
+@pytest.mark.asyncio
+async def test_resolve():
+    apath = await AsyncPath().resolve()
+    assert apath == Path().resolve()
+    assert isinstance(apath, AsyncPath)
+    assert await apath.exists()
+    p = AsyncPath("/C/Windows/a.txt")
+    assert (await p.resolve()) == p
