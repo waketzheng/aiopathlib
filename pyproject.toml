@@ -31,6 +31,9 @@ dependencies = [
 ]
 requires-python = ">=3.8"
 
+[project.optional-dependencies]
+accel = ["orjson>=3.10.15"]
+
 [project.urls]
 homepage = "https://github.com/waketzheng/aiopathlib"
 repository = "https://github.com/waketzheng/aiopathlib.git"
@@ -53,6 +56,7 @@ dev = [
 test = [
     "pytest-asyncio>=0.24.0",
     "coverage>=7.6.1",
+    "pytest-cov>=5.0.0",
 ]
 
 [tool.ruff]

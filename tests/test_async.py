@@ -19,7 +19,7 @@ async def test_stat_lstat_is_sth():
 
     stat_res = await AsyncPath(filename).stat()
 
-    assert stat_res.st_size == 10
+    assert stat_res.st_size == 11
     p = Path(filename)
     assert stat_res == p.stat()
     ln = p.with_name(p.name + ".ln")
@@ -159,7 +159,7 @@ async def test_write():
     assert size == 2
     data = {"key": 3}
     size = await AsyncPath(filename).write_json(data)
-    content = json.dumps(data)
+    content = json.dumps(data, separators=(",", ":"))
     assert Path(filename).read_text() == content
     assert await AsyncPath(filename).read_json() == data
     assert size == len(content)
@@ -184,3 +184,14 @@ async def test_resolve():
     assert await apath.exists()
     p = AsyncPath("/C/Windows/a.txt")
     assert (await p.resolve()) == p
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("tmp_work_dir")
+async def test_json():
+    data = {"a": 1}
+    text = '{"a":1}'
+    p = AsyncPath("tmp.json")
+    await p.write_json(data)
+    assert (await p.read_text()) == text
+    assert (await p.read_json()) == data

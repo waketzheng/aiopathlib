@@ -31,11 +31,15 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install --group dev --group test -e .
+        pip install --group dev --group test -e ".[accel]"
     - name: Check
       run: make check
     - name: Test with pytest
-      run: coverage run -m pytest
+      run: |
+        pytest --cov=aiopathlib --cov-append tests
+        pip uninstall orjson
+        pytest --cov=aiopathlib --cov-append tests/test_async.py::test_json
+        pip install orjson
     - name: Upload result to codecov
       uses: codecov/codecov-action@v2
       with:

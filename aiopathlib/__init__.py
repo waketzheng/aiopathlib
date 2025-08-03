@@ -26,7 +26,24 @@ if TYPE_CHECKING:
         from typing_extensions import Self
 
 __version__ = "0.6.0"
-JSONType = Union[list, dict, int, str, float, bool, None]
+JSONType = Union[list, dict, tuple, int, str, float, bool, None]
+
+try:
+    import orjson
+except ImportError:
+
+    def json_dump_bytes(data: JSONType, **kw) -> bytes:
+        return json.dumps(data, separators=(",", ":"), **kw).encode()
+
+    def json_loads(data: bytes, **kw) -> JSONType:
+        return json.loads(data, **kw)
+else:
+
+    def json_dump_bytes(data: JSONType, **kw) -> bytes:
+        return orjson.dumps(data, **kw)
+
+    def json_loads(data: bytes, **kw) -> JSONType:
+        return orjson.loads(data, **kw)
 
 
 class AsyncPath(Path):
@@ -84,6 +101,9 @@ class AsyncPath(Path):
         executor=None,
         **json_dump_kwargs,
     ) -> int:
+        if encoding is None or encoding.lower() in ("utf8", "utf-8"):
+            content = json_dump_bytes(context, **json_dump_kwargs)
+            return await self.write_bytes(content, loop=loop, executor=executor)
         return await self.async_write(
             json.dumps(context, **json_dump_kwargs),
             "w",
@@ -136,6 +156,8 @@ class AsyncPath(Path):
         executor=None,
         **kw,
     ) -> JSONType:
+        if encoding is None or encoding.lower() in ("utf8", "utf-8"):
+            return json_loads(await self.read_bytes(loop=loop, executor=executor), **kw)
         return json.loads(await self.read_text(encoding, errors), **kw)
 
     async def remove(self, missing_ok: bool = False) -> None:

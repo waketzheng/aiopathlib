@@ -1,5 +1,5 @@
 checkfiles = aiopathlib/__init__.py tests/test_async.py tests/test_sync.py
-.PHONY: lint 
+.PHONY: lint
 .DEFAULT_GOAL := help
 help:
 	@grep '^[a-zA-Z]' $(MAKEFILE_LIST) | sort | awk -F ':.*?## ' 'NF==2 {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
@@ -12,6 +12,13 @@ sync:
 
 deps:
 	$(MAKE) sync options="--frozen --inexact"
+
+tree:
+ifeq ($(shell which twine),)
+	uv tree
+else
+	pdm list --tree
+endif
 
 build:  ## Build wheel and zip
 	python -m build
@@ -36,8 +43,7 @@ check: build  ## Checks that build is sane
 	twine check dist/*
 
 test: ## Test code with pytest and show coverage
-	coverage run -m pytest
-	coverage report -m
+	pytest --cov=aiopathlib --cov-report=term-missing $(pytest_opts) tests
 
 part = patch
 

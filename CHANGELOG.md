@@ -2,8 +2,9 @@
 
 ## 0.6
 
-#### 0.6.1 (Unreleased)
+#### 0.6.1 (2025-08-03)
 - feat: override resolve to be asynchronous (#1)
+- feat: auto use orjson to speed up json read/write
 
 #### 0.6.0 (2025-08-01)
 - Migrate from poetry to uv

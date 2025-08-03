@@ -113,4 +113,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# IDE(e.g.: PyCharm)
 .idea
