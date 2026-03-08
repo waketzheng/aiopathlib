@@ -11,12 +11,11 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
     "Operating System :: POSIX",
     "Environment :: Web Environment",
@@ -26,10 +25,8 @@ classifiers = [
     "Framework :: AsyncIO",
 ]
 include = ["LICENSE", "README.md"]
-dependencies = [
-    "aiofiles >=0.8.0",
-]
-requires-python = ">=3.8"
+dependencies = ["aiofiles >=0.8.0"]
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 accel = ["orjson>=3.10.15"]
@@ -49,7 +46,7 @@ dev = [
     "mypy>=1.14.1",
     "ruff>=0.12.7",
     "types-aiofiles>=24.1.0.20241221",
-    "fast-dev-cli; python_version >= '3.9'",
+    "fast-dev-cli>=0.22.0",
     "twine>=6.1.0",
     "build>=1.2.2.post1",
 ]
@@ -102,15 +99,14 @@ exclude_lines = [
 legacy_tox_ini = """
 [gh-actions]
 python =
-    3.8: py38
-    3.9: py39
     3.10: py310
     3.11: py311
     3.12: py312
     3.13: py313
+    3.14: py314
 
 [tox]
-envlist = py38, py39, py310, py311, py312, py313
+envlist = py310, py311, py312, py313, py314
 isolated_build = True
 
 [testenv]
@@ -123,7 +119,7 @@ passenv = CI
 
 [tool.mypy]
 pretty = true
-python_version = "3.9"
+python_version = "3.10"
 check_untyped_defs = true
 warn_unused_ignores = true
 disable_error_code = "override"

@@ -3,9 +3,10 @@ from __future__ import annotations
 import json
 import os
 import sys
+from collections.abc import Generator
 from pathlib import Path, PosixPath, PurePath, WindowsPath
 from stat import S_ISBLK, S_ISCHR, S_ISDIR, S_ISFIFO, S_ISLNK, S_ISREG, S_ISSOCK
-from typing import TYPE_CHECKING, Generator, Union
+from typing import TYPE_CHECKING, TypeAlias
 
 import aiofiles
 import aiofiles.os
@@ -26,7 +27,7 @@ if TYPE_CHECKING:
         from typing_extensions import Self
 
 __version__ = "0.6.0"
-JSONType = Union[list, dict, tuple, int, str, float, bool, None]
+JSONType: TypeAlias = list | dict | tuple | int | str | float | bool | None
 
 try:
     import orjson

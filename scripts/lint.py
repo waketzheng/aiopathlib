@@ -25,7 +25,11 @@ CMD = "ruff format && ruff check --fix"
 _tool = Tools.uv
 BANDIT = True
 TOOL = getattr(_tool, "name", str(_tool))
-PREFIX = (TOOL + " run ") if TOOL and Tools.none.name != TOOL else ""
+PREFIX = (
+    (TOOL + " run " + "--no-sync " * (Tools.uv.name == TOOL))
+    if TOOL and Tools.none.name != TOOL
+    else ""
+)
 parent = os.path.abspath(os.path.dirname(__file__))
 work_dir = os.path.dirname(parent)
 if os.getcwd() != work_dir:
