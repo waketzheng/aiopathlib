@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     else:
         from typing_extensions import Self
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 JSONType: TypeAlias = list | dict | tuple | int | str | float | bool | None
 
 try:
