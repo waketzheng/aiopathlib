@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 0.7
+
+#### 0.7.0 (2026-03-09)
+- feat: drop support for python3.8/python3.9
+
 ## 0.6
 
 #### 0.6.1 (2025-08-03)
